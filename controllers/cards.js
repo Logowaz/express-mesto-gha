@@ -6,36 +6,23 @@ const { notFoundError, validationError, defaultError } = require('../errors/erro
 // Обработчик получения всех карточек
 const getCards = (req, res) => {
   Card.find({})
-    .then((cards) => {
-      res.status(200).json(cards);
-    })
+    .then((cards) => res.status(200).send(cards))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        return res.status(validationError).send({ message: 'Переданные данные некорректны', err: err.message });
-      }
-      if (err.message === 'Not Found') {
-        return res.status(notFoundError).send({ message: 'Объект не найден', err: err.message });
-      }
-      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера', err: err.message });
+      res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера', err: err.message });
     });
 };
 
 // Обработчик создания карточки
 const createCard = (req, res) => {
-  const { name, link } = req.body;
   const owner = req.user._id;
-  Card.create({ name, link, owner })
-    .then((card) => {
-      res.status(201).json(card);
-    })
+  const { name, link } = req.body;
+  Card.create({ owner, name, link })
+    .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res
-          .status(400)
-          .json({ message: 'Переданы некорректные данные карточки' });
-      } else {
-        res.status(500).json({ message: 'Внутренняя ошибка сервера' });
+        return res.status(validationError).send({ message: 'Переданные данные некорректны' });
       }
+      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
     });
 };
 
