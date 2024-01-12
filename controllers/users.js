@@ -58,17 +58,13 @@ const createUser = (req, res) => {
 const updateProfile = (req, res) => {
   const { name, about } = req.body;
   const owner = req.user._id;
-
-  User.findByIdAndUpdate(owner, { name, about }, { new: true })
-    .then((updatedUser) => {
-      if (updatedUser) {
-        res.status(200).json(updatedUser);
-      } else {
-        res.status(404).json({ message: 'User not found' });
-      }
-    })
+  User.findByIdAndUpdate(owner, { name, about }, { new: true, runValidators: true })
+    .then((user) => res.send(user))
     .catch((err) => {
-      res.status(400).json({ message: err.message });
+      if (err.name === 'ValidationError') {
+        return res.status(validationError).send({ message: 'Переданные данные некорректны' });
+      }
+      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
     });
 };
 
