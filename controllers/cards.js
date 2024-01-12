@@ -41,23 +41,17 @@ const createCard = (req, res) => {
 
 // Обработчик удаления карточки по идентификатору
 const deleteCardById = (req, res) => {
-  const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId)
-    .then((card) => {
-      if (!card) {
-        res.status(404).json({ message: 'Карточка не найдена' });
-      } else {
-        res.status(200).json(card);
-      }
-    })
+  Card.findByIdAndRemove(req.params.cardId)
+    .orFail(() => new Error('Not found'))
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res
-          .status(400)
-          .json({ message: 'Некорректный идентификатор карточки' });
-      } else {
-        res.status(500).json({ message: 'Внутренняя ошибка сервера' });
+        return res.status(validationError).send({ message: 'Передан невалидный ID' });
       }
+      if (err.message === 'Not found') {
+        return res.status(notFoundError).send({ message: 'Объект не найден' });
+      }
+      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
     });
 };
 
