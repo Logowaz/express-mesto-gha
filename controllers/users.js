@@ -64,7 +64,7 @@ const updateProfile = (req, res) => {
       // if (!user) {
       //   return res.status(notFoundError).json({ message: 'Пользователь не найден' });
       // }
-      return res.status(200).send(user);
+      return res.status(200).json(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
