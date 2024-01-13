@@ -44,7 +44,7 @@ mongoose.connect('mongodb://127.0.0.1/mestodb');
 
 app.use(router);
 app.use('/*', (req, res) => {
-  res.status(notFoundError).send({ message: 'Что-то пошло не так...' });
+  res.status(notFoundError).send({ message: 'Кажется что-то пошло не так...' });
 });
 
 app.listen(PORT, () => {

@@ -12,6 +12,22 @@ const getCards = (req, res) => {
     });
 };
 
+// Обработчик удаления карточки по идентификатору
+const deleteCardById = (req, res) => {
+  Card.findByIdAndDelete(req.params.cardId)
+    .orFail(() => { throw new Error('Not found'); })
+    .then((card) => res.status(200).send(card))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(validationError).send({ message: 'Передан невалидный ID' });
+      }
+      if (err.message === 'Not found') {
+        return res.status(notFoundError).send({ message: 'Объект не найден' });
+      }
+      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
+    });
+};
+
 // Обработчик создания карточки
 const createCard = (req, res) => {
   const owner = req.user._id;
@@ -21,22 +37,6 @@ const createCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(validationError).send({ message: 'Переданные данные некорректны' });
-      }
-      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
-    });
-};
-
-// Обработчик удаления карточки по идентификатору
-const deleteCardById = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .orFail(() => new Error('Not found'))
-    .then((card) => res.status(200).send(card))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(validationError).send({ message: 'Передан невалидный ID' });
-      }
-      if (err.message === 'Not found') {
-        return res.status(notFoundError).send({ message: 'Объект не найден' });
       }
       return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
     });
