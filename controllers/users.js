@@ -60,10 +60,10 @@ const updateProfile = (req, res) => {
   const owner = req.user._id;
   User.findByIdAndUpdate(owner, { name, about }, { new: true, runValidators: true })
     .then((user) => {
-      if (user) {
-        return res.status(200).json(user);
+      if (!user) {
+        return res.status(notFoundError).json({ message: 'Пользователь не найден' });
       }
-      return res.status(notFoundError).json({ message: 'Пользователь не найден' });
+      return res.status(200).json(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
