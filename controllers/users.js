@@ -44,12 +44,12 @@ const updateProfile = (req, res) => {
   const { name, about } = req.body;
   const owner = req.user._id;
   User.findByIdAndUpdate(owner, { name, about }, { new: true, runValidators: true })
-    .then((user) => res.send(user))
+    .then((user) => res.json(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(validationError).send({ message: 'Переданные данные некорректны' });
+        return res.status(validationError).json({ message: 'Переданные данные некорректны' });
       }
-      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
+      return res.status(defaultError).json({ message: 'Произошла неизвестная ошибка сервера' });
     });
 };
 
@@ -57,7 +57,7 @@ const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   const owner = req.user._id;
   User.findByIdAndUpdate(owner, { avatar }, { new: true, runValidators: true })
-    .then((user) => res.send(user))
+    .then((user) => res.json(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(validationError).send({ message: 'Переданные данные некорректны' });
