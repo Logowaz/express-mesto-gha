@@ -9,7 +9,7 @@ const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
     .catch((err) => {
-      res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера', err: err.message });
+      res.status(defaultError).send({ message: 'Ошибка по умолчанию', err: err.message });
     });
 };
 
@@ -19,12 +19,12 @@ const getUserById = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(validationError).send({ message: 'Передан невалидный ID', err: err.message });
+        return res.status(validationError).send({ message: 'Переданы некорректные данные при запросе пользователя', err: err.message });
       }
       if (err.message === 'Not Found') {
-        return res.status(notFoundError).send({ message: 'Объект не найден', err: err.message });
+        return res.status(notFoundError).send({ message: ' Пользователь по указанному id не найден', err: err.message });
       }
-      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера', err: err.message });
+      return res.status(defaultError).send({ message: 'Ошибка по умолчанию', err: err.message });
     });
 };
 
@@ -34,9 +34,9 @@ const createUser = (req, res) => {
     .then((user) => res.status(statusOK).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(validationError).send({ message: 'Переданные данные некорректны' });
+        return res.status(validationError).send({ message: 'Переданы некорректные данные при создании пользователя' });
       }
-      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
+      return res.status(defaultError).send({ message: 'Ошибка по умолчанию' });
     });
 };
 
@@ -49,15 +49,15 @@ const updateProfile = (req, res) => {
     .then((user) => {
       if (!user) {
         console.log(req.user._id);
-        return res.status(notFoundError).json({ message: 'Пользователь не найден' });
+        return res.status(notFoundError).json({ message: 'Пользователь с указанным id не найден' });
       }
       return res.json(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(validationError).json({ message: 'Переданные данные некорректны' });
+        return res.status(validationError).json({ message: 'Переданы некорректные данные при обновлении профиля' });
       }
-      return res.status(defaultError).json({ message: 'Произошла неизвестная ошибка сервера' });
+      return res.status(defaultError).json({ message: 'Ошибка по умолчанию' });
     });
 };
 
@@ -68,9 +68,9 @@ const updateAvatar = (req, res) => {
     .then((user) => res.json(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(validationError).send({ message: 'Переданные данные некорректны' });
+        return res.status(validationError).send({ message: 'Переданы некорректные данные при обновлении аватара' });
       }
-      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
+      return res.status(defaultError).send({ message: 'Ошибка по умолчанию' });
     });
 };
 
