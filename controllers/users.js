@@ -3,7 +3,8 @@ const User = require('../models/user');
 
 const { notFoundError, validationError, defaultError } = require('../errors/errors');
 
-// Обработчик получения всех пользователей
+const statusOK = 201;
+
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
@@ -12,17 +13,10 @@ const getUsers = (req, res) => {
     });
 };
 
-// Обработчик получения пользователя по _id
 const getUserById = (req, res) => {
-  const { userId } = req.params;
-  User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        res.status(404).json({ message: 'Пользователь не найден' });
-      } else {
-        res.status(200).json(user);
-      }
-    })
+  User.findById(req.params.userId)
+    .orFail(() => new Error('Not Found'))
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(validationError).send({ message: 'Передан невалидный ID', err: err.message });
@@ -34,51 +28,31 @@ const getUserById = (req, res) => {
     });
 };
 
-// Обработчик создания пользователя
-// module.exports.createUser = (req, res) => {
 const createUser = (req, res) => {
-  // console.log('123');
-  console.log(req.body);
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => {
-      res.status(201).json(user);
-    })
+    .then((user) => res.status(statusOK).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).json({ message: 'Переданы некорректные данные пользователя' });
-      } else {
-        res.status(500).json({ message: 'Внутренняя ошибка сервера' });
+        return res.status(validationError).send({ message: 'Переданные данные некорректны' });
       }
+      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
     });
 };
 
-// PATCH /users/me - обновляет профиль
-// module.exports.updateProfile = (req, res) => {
 const updateProfile = (req, res) => {
   const { name, about } = req.body;
-  req.user = {
-    _id: '65a1c29d2825a56df1858454',
-  };
   const owner = req.user._id;
   User.findByIdAndUpdate(owner, { name, about }, { new: true, runValidators: true })
-    .then((user) => {
-      console.log(user);
-      if (!user) {
-        return res.status(notFoundError).json({ message: 'Пользователь не найден' });
-      }
-      return res.status(200).json(user);
-    })
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(validationError).json({ message: 'Переданные данные некорректны' });
+        return res.status(validationError).send({ message: 'Переданные данные некорректны' });
       }
-      return res.status(defaultError).json({ message: 'Произошла неизвестная ошибка сервера' });
+      return res.status(defaultError).send({ message: 'Произошла неизвестная ошибка сервера' });
     });
 };
 
-// PATCH /users/me/avatar - обновляет аватар
-// module.exports.updateAvatar = (req, res) => {
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   const owner = req.user._id;
