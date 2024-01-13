@@ -44,7 +44,12 @@ const updateProfile = (req, res) => {
   const { name, about } = req.body;
   const owner = req.user._id;
   User.findByIdAndUpdate(owner, { name, about }, { new: true, runValidators: true })
-    .then((user) => res.json(user))
+    .then((user) => {
+      if (!user) {
+        return res.status(notFoundError).json({ message: 'Пользователь не найден' });
+      }
+      return res.json(user);
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(validationError).json({ message: 'Переданные данные некорректны' });
