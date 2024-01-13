@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-const Card = require('../models/card').default;
+const Card = require('../models/card');
 
 const { notFoundError, validationError, defaultError } = require('../errors/errors');
 
