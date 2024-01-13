@@ -57,13 +57,16 @@ const createUser = (req, res) => {
 // module.exports.updateProfile = (req, res) => {
 const updateProfile = (req, res) => {
   const { name, about } = req.body;
+  req.user = {
+    _id: '65a1c29d2825a56df1858454',
+  };
   const owner = req.user._id;
   User.findByIdAndUpdate(owner, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       console.log(user);
-      // if (!user) {
-      //   return res.status(notFoundError).json({ message: 'Пользователь не найден' });
-      // }
+      if (!user) {
+        return res.status(notFoundError).json({ message: 'Пользователь не найден' });
+      }
       return res.status(200).json(user);
     })
     .catch((err) => {
