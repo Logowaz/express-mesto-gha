@@ -43,9 +43,12 @@ const createUser = (req, res) => {
 const updateProfile = (req, res) => {
   const { name, about } = req.body;
   const owner = req.user._id;
+  console.log(req.user._id);
   User.findByIdAndUpdate(owner, { name, about }, { new: true, runValidators: true })
+    .orFail(() => { throw new Error('Not found'); })
     .then((user) => {
       if (!user) {
+        console.log(req.user._id);
         return res.status(notFoundError).json({ message: 'Пользователь не найден' });
       }
       return res.json(user);
