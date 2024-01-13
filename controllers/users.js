@@ -61,7 +61,7 @@ const updateProfile = (req, res) => {
   User.findByIdAndUpdate(owner, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (user) {
-        return res.json(user);
+        return res.status(200).json(user);
       }
       return res.status(notFoundError).json({ message: 'Пользователь не найден' });
     })
