@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const cardSchema = new mongoose.Schema({
+const cardSchema = new Schema({
   name: {
     required: true,
     type: String,
@@ -15,12 +15,12 @@ const cardSchema = new mongoose.Schema({
 
   owner: {
     required: true,
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'user',
   },
 
   likes: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     default: [],
     ref: 'user',
   }],
@@ -31,4 +31,4 @@ const cardSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('card', cardSchema);
+export default model('card', cardSchema);
