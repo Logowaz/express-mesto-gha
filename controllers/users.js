@@ -48,7 +48,7 @@ const createUser = (req, res, next) => {
         .catch(next)
     )
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные при создании пользователя'));
       } 
         else if (err.code === 11000) {
