@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const Card = require('../models/card');
 
 const NotFoundError = require('../errors/notFoundError');

@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const bcrypt = require('bcryptjs');
 const jsonWebToken = require('jsonwebtoken');
 const User = require('../models/user');
