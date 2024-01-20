@@ -2,27 +2,25 @@ const express = require('express');
 
 const router = express.Router();
 const { celebrate, Joi } = require('celebrate');
-const NotFoundError = require('../errors/notFoundError');
-const auth = require('../middlewares/auth');
-const { createUser, login } = require('../controllers/users');
 const userRoutes = require('./users');
 const cardRoutes = require('./cards');
+const { createUser, login } = require('../controllers/users');
+const NotFoundError = require('../errors/notFoundError');
+const auth = require('../middlewares/auth');
+
 const { regExpUrl } = require('../utils/consts');
 
-router.post(
-  '/signin',
-  celebrate({
+router.post('/signin', celebrate(
+  {
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required(),
     }),
-  }),
-  login
-);
+  },
+), login);
 
-router.post(
-  '/signup',
-  celebrate({
+router.post('/signup', celebrate(
+  {
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).optional(),
       avatar: Joi.string().regex(regExpUrl).optional(),
@@ -30,14 +28,10 @@ router.post(
       email: Joi.string().required().email(),
       password: Joi.string().required(),
     }),
-  }),
-  createUser
-);
+  },
+), createUser);
 
 router.use(auth);
-router.get('/signout', (req, res) => {
-  res.clearCookie('jwt').send({ message: 'Выход' });
-});
 
 router.use('/users', userRoutes);
 router.use('/cards', cardRoutes);
