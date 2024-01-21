@@ -29,7 +29,7 @@ const cardSchema = new mongoose.Schema({
     default: [],
     ref: 'user',
   }],
-  
+
   createdAt: {
     type: Date,
     default: Date.now,

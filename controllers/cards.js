@@ -4,12 +4,12 @@ const NotFoundError = require('../errors/notFoundError');
 const ForbiddenError = require('../errors/forbiddenError');
 const ValidationError = require('../errors/validationError');
 
-const statusOK = 201
+const statusOK = 201;
 
 // Обработчик получения всех карточек
 const getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.status(200).send(cards))
+    .then((cards) => res.send(cards))
     .catch(next);
 };
 

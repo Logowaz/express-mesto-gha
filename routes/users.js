@@ -1,5 +1,3 @@
-const express = require('express');
-
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const cookieParser = require('cookie-parser');
@@ -26,7 +24,7 @@ router.get(
       userId: Joi.string().length(24).hex().required(),
     }),
   }),
-  getUserById
+  getUserById,
 );
 
 router.patch(
@@ -37,7 +35,7 @@ router.patch(
       about: Joi.string().min(2).max(30).required(),
     }),
   }),
-  updateProfile
+  updateProfile,
 );
 
 router.patch(
@@ -47,8 +45,7 @@ router.patch(
       avatar: Joi.string().regex(regExpUrl).required(),
     }),
   }),
-  updateAvatar
+  updateAvatar,
 );
 
 module.exports = router;
-

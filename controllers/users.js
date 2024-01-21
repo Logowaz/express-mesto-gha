@@ -12,7 +12,7 @@ const statusOK = 201;
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -22,7 +22,7 @@ const getUserById = (req, res, next) => {
       if (!user) {
         throw new NotFoundError('Переданы некорректные данные при запросе пользователя');
       } else {
-        next(res.status(200).send(user));
+        next(res.send(user));
       }
     })
     .catch((err) => {
@@ -36,8 +36,7 @@ const getUserById = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   bcrypt.hash(String(req.body.password), 10)
-    .then((hashedpassword) => 
-      User.create({ ...req.body, password: hashedpassword }))
+    .then((hashedpassword) => User.create({ ...req.body, password: hashedpassword }))
     .then((user) => res.status(statusOK).send({ data: user.toJSON() }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -59,10 +58,7 @@ const login = (req, res, next) => {
       bcrypt.compare(String(password), user.password)
         .then((isValidUser) => {
           if (isValidUser) {
-
-            const jwt = jsonWebToken.sign({ 
-              _id: user._id 
-            }, 'JWT_SECRET');
+            const jwt = jsonWebToken.sign({ _id: user._id }, 'JWT_SECRET');
             res.cookie('jwt', jwt, {
               maxAge: 2629440000,
               httpOnly: true,
@@ -81,7 +77,7 @@ const login = (req, res, next) => {
 const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
   const owner = req.user._id;
-  console.log(req.user._id);
+  // console.log(req.user._id);
   User.findByIdAndUpdate(owner, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
@@ -122,5 +118,5 @@ module.exports = {
   updateProfile,
   updateAvatar,
   login,
-  getUserInfo
+  getUserInfo,
 };

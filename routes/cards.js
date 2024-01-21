@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 const { celebrate, Joi } = require('celebrate');
 const { regExpUrl } = require('../utils/consts');
@@ -20,8 +21,9 @@ router.post(
       link: Joi.string().regex(regExpUrl).required(),
     }),
   }),
-  createCard
+  createCard,
 );
+
 router.delete(
   '/:cardId',
   celebrate({
@@ -29,7 +31,7 @@ router.delete(
       cardId: Joi.string().length(24).hex().required(),
     }),
   }),
-  deleteCardById
+  deleteCardById,
 );
 router.put(
   '/:cardId/likes',
@@ -38,7 +40,7 @@ router.put(
       cardId: Joi.string().length(24).hex().required(),
     }),
   }),
-  likeCard
+  likeCard,
 );
 router.delete(
   '/:cardId/likes',
@@ -47,7 +49,7 @@ router.delete(
       cardId: Joi.string().length(24).hex().required(),
     }),
   }),
-  dislikeCard
+  dislikeCard,
 );
 
 module.exports = router;

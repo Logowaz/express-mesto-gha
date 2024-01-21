@@ -11,5 +11,5 @@ module.exports = {
   forbiddenError,
   validationError,
   conflictError,
-  defaultError
+  defaultError,
 };

@@ -17,7 +17,7 @@ router.post(
       password: Joi.string().required(),
     }),
   }),
-  login
+  login,
 );
 
 router.post(
@@ -31,7 +31,7 @@ router.post(
       password: Joi.string().required(),
     }),
   }),
-  createUser
+  createUser,
 );
 
 router.use(auth);

@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.methods.toJSON = function () {
+userSchema.methods.toJSON = function toJSON() {
   const user = this.toObject();
   delete user.password;
   return user;
