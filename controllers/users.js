@@ -8,8 +8,6 @@ const UnauthorizedError = require('../errors/unauthorizedError');
 const ValidationError = require('../errors/validationError');
 const DefaultError = require('../errors/defaultError');
 
-const { notFoundError, validationError, defaultError } = require('../errors/errors');
-
 const statusOK = 201;
 
 const getUsers = (req, res) => {
@@ -39,21 +37,15 @@ const getUserById = (req, res) => {
 
 const createUser = (req, res, next) => {
   bcrypt.hash(String(req.body.password), 10)
-    .then((hashedPassword) => 
-      User.create({ ...req.body, password: hashedPassword })
-        .then((user) => {
-          res.status(statusOK)
-            .send({ data: user.toJSON() });
-        })
-        .catch(next)
-    )
+    .then((hashedpassword) => 
+      User.create({ ...req.body, password: hashedpassword }))
+    .then((user) => res.status(statusOK).send({ data: user.toJSON() }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError('Переданы некорректные данные при создании пользователя'));
-      } 
-        else if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким E-mail уже существует'));} 
-        else {
+        next(new ValidationError('Переданы некоректные данные при создании пользователя'));
+      } else if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким E-mail уже существует'));
+      } else {
         next(err);
       }
     });

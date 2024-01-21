@@ -8,7 +8,6 @@ const { createUser, login } = require('../controllers/users');
 const userRoutes = require('./users');
 const cardRoutes = require('./cards');
 const { regExpUrl } = require('../utils/consts');
-const ValidationError = require('../errors/validationError');
 
 router.post(
   '/signin',
@@ -32,20 +31,13 @@ router.post(
       password: Joi.string().required(),
     }),
   }),
-  (req, res, next) => {
-    const { error } = req.validation;
-    if (error) {
-      next(new ValidationError(error.details[0].message));
-    } else {
-      createUser(req, res, next);
-    }
-  }
+  createUser
 );
 
 router.use(auth);
-// router.get('/signout', (req, res) => {
-//   res.clearCookie('jwt').send({ message: 'Выход' });
-// });
+router.get('/signout', (req, res) => {
+  res.clearCookie('jwt').send({ message: 'Выход' });
+});
 
 router.use('/users', userRoutes);
 router.use('/cards', cardRoutes);
