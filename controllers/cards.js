@@ -7,7 +7,7 @@ const ValidationError = require('../errors/validationError');
 const statusOK = 201
 
 // Обработчик получения всех карточек
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
     .catch(next);
@@ -30,7 +30,7 @@ const deleteCardById = (req, res, next) => {
 };
 
 // Обработчик создания карточки
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const owner = req.user._id;
   const { name, link } = req.body;
   Card.create({ owner, name, link })
@@ -45,7 +45,7 @@ const createCard = (req, res) => {
 };
 
 // Обработчик постановки лайка карточке
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   const owner = req.user._id;
 
   Card.findByIdAndUpdate(
@@ -70,7 +70,7 @@ const likeCard = (req, res) => {
 };
 
 // Обработчик удаления лайка с карточки
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   const owner = req.user._id;
 
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: owner } }, { new: true })

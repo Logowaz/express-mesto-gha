@@ -10,15 +10,14 @@ const DefaultError = require('../errors/defaultError');
 
 const statusOK = 201;
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send(users))
     .catch(next);
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
-    // .orFail(() => new NotFoundError('Not Found'))
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Переданы некорректные данные при запросе пользователя');
@@ -79,7 +78,7 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
   const owner = req.user._id;
   console.log(req.user._id);
@@ -92,7 +91,7 @@ const updateProfile = (req, res) => {
     });
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   const owner = req.user._id;
   User.findByIdAndUpdate(owner, { avatar }, { new: true, runValidators: true })
