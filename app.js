@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
@@ -9,12 +10,14 @@ const errorHandler = require('./middlewares/errorHandler');
 const { PORT = 3000 } = process.env;
 const app = express();
 
+// console.log(process.env['JWT_SECRET']);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// mongoose.connect('mongodb://127.0.0.1/mestodb');
+
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(router);
