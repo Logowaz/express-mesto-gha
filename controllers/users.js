@@ -63,7 +63,7 @@ const login = (req, res, next) => {
 
             const jwt = jsonWebToken.sign({ 
               _id: user._id 
-            }, process.env['JWT_SECRET']);
+            }, 'JWT_SECRET');
             res.cookie('jwt', jwt, {
               maxAge: 2629440000,
               httpOnly: true,
